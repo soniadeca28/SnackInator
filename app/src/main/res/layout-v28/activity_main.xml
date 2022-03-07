@@ -8,50 +8,50 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="351dp"
-        android:layout_height="193dp"
+        android:layout_width="364dp"
+        android:layout_height="202dp"
         android:contentDescription="@string/todo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.117"
+        app:layout_constraintVertical_bias="0.107"
         app:srcCompat="@drawable/app_logo_image" />
+
+    <EditText
+        android:id="@+id/code"
+        android:layout_width="314dp"
+        android:layout_height="54dp"
+        android:backgroundTint="@color/baby_blue"
+        android:ems="10"
+        android:hint="@string/code"
+        android:importantForAutofill="no"
+        android:inputType="textEmailAddress"
+        android:textColor="#F4F0F0"
+        android:textColorHint="#FFFFFF"
+        android:textColorLink="#7E93FFDA"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintVertical_bias="0.251" />
 
     <Button
         android:id="@+id/validate"
-        style="?android:attr/buttonCornerRadius"
         android:layout_width="196dp"
         android:layout_height="54dp"
-        android:layout_marginTop="113dp"
+        android:layout_marginTop="84dp"
         android:backgroundTint="@color/light_blue"
         android:text="@string/validate"
         android:textColor="@color/white"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/code"
-        app:layout_constraintVertical_bias="0.0"
-        tools:ignore="TextContrastCheck"
-        tools:targetApi="p" />
-
-    <EditText
-        android:id="@+id/code"
-        android:layout_width="291dp"
-        android:layout_height="48dp"
-        android:backgroundTint="@color/baby_blue"
-        android:ems="10"
-        android:hint="@string/code"
-        android:importantForAutofill="no"
-        android:inputType="text"
-        android:textColor="#F4F0F0"
-        android:textColorHint="#FFFFFF"
-        android:textColorLink="#7E93FFDA"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.199" />
+        app:layout_constraintVertical_bias="0.011"
+        tools:ignore="TextContrastCheck" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
