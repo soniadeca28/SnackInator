@@ -3,7 +3,7 @@
     <string name="todo">TODO</string>
     <string name="button">Button</string>
     <string name="password">Password</string>
-    <string name="login">login</string>
-    <string name="e_mail">E-mail</string>
+    <string name="validate">validate</string>
+    <string name="code">Code</string>
     <string name="create_account">create account</string>
 </resources>
