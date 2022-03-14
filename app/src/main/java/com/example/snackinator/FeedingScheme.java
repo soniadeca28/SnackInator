@@ -13,7 +13,7 @@ import java.util.Locale;
 
 public class FeedingScheme extends AppCompatActivity {
 
-    Button breakfastTimeButton;
+    Button breakfastTimeButton, lunchTimeButton, dinnerTimeButton;
     int hour,minute;
 
     @Override
@@ -22,17 +22,23 @@ public class FeedingScheme extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feeding_scheme);
         breakfastTimeButton = findViewById(R.id.breakfastTime);
-        breakfastTimeButton.setOnClickListener(this::timePicker);
+        breakfastTimeButton.setOnClickListener(v->timePicker(v,breakfastTimeButton));
+
+        lunchTimeButton = findViewById(R.id.lunchTime);
+        lunchTimeButton.setOnClickListener(v->timePicker(v,lunchTimeButton));
+
+        dinnerTimeButton = findViewById(R.id.dinnerTime);
+        dinnerTimeButton.setOnClickListener(v->timePicker(v,dinnerTimeButton));
     }
 
-    public void timePicker(View view)
+    public void timePicker(View view, Button btn)
     {
         TimePickerDialog.OnTimeSetListener onTimeSetListener = (view1, hourPicker, minutePicker) -> {
             hour = hourPicker;
             minute = minutePicker;
-            breakfastTimeButton.setText(String.format(Locale.getDefault(),"%02d:%02d",hour,minute));
+            btn.setText(String.format(Locale.getDefault(),"%02d:%02d",hour,minute));
         };
-        int timePickerStyle = AlertDialog.THEME_HOLO_DARK;
+        int timePickerStyle = AlertDialog.THEME_HOLO_DARK; // !!!!!!!!!! deprecated
         TimePickerDialog timePickerDialog = new TimePickerDialog(this,timePickerStyle,onTimeSetListener,hour,minute,true);
         timePickerDialog.setTitle("00:00");
         timePickerDialog.show();
