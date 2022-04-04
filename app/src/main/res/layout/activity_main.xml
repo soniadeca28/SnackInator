@@ -43,6 +43,7 @@
         android:backgroundTint="@color/baby_blue"
         android:ems="10"
         android:hint="@string/code"
+        android:textSize="20sp"
         android:importantForAutofill="no"
         android:inputType="text"
         android:textColor="@color/white"

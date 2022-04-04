@@ -14,4 +14,10 @@
     <string name="g">g</string>
     <string name="_100">100</string>
     <string name="_0">0</string>
+    <string name="water">Water Fountain</string>
+    <string name="save">Save</string>
+    <string name="back">❮</string>
+    <string name="feedingScheme">Feeding Scheme</string>
+    <string name="once_a_day">Once a day</string>
+    <string name="all_day">All day</string>
 </resources>
