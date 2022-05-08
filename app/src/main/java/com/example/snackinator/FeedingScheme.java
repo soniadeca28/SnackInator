@@ -1,24 +1,15 @@
 package com.example.snackinator;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.app.AlertDialog;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.util.Log;
-import android.util.SparseArray;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ToggleButton;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,22 +17,21 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
-import java.util.Objects;
 
 public class FeedingScheme extends AppCompatActivity {
 
-    private static final String TAG = "TAG";
-    Button breakfastTimeButton, lunchTimeButton, dinnerTimeButton, backToHomeButton, saveButton;
-    ToggleButton waterChoiceButton;
-    int hourBreakfast,minuteBreakfast,hourLunch,minuteLunch,hourDinner,minuteDinner,
-    backupBreakfastH = -1, getBackupBreakfastM = -1, backupLunchH = -1, getBackupLunchM = -1, backupDinnerH = -1, getBackupDinnerM = -1;
-    boolean breakfastTimeButtonClicked, lunchTimeButtonClicked, dinnerTimeButtonClicked, waterChoiceButtonClicked;
-    TextView servingBreakfast, servingLunch, servingDinner;
-    FirebaseDatabase firebaseDatabase;
-    DatabaseReference databaseReference;
+    private Button breakfastTimeButton;
+    private Button lunchTimeButton;
+    private Button dinnerTimeButton;
+    private ToggleButton waterChoiceButton;
+    private int hourBreakfast,minuteBreakfast,hourLunch,minuteLunch, hourDinner,minuteDinner,
+    backupBreakfastH, backupBreakfastM, backupLunchH, backupLunchM, backupDinnerH, backupDinnerM;
+    private boolean breakfastTimeButtonClicked;
+    private boolean lunchTimeButtonClicked;
+    private boolean dinnerTimeButtonClicked;
+    private TextView servingBreakfast, servingLunch, servingDinner;
+    private DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -49,34 +39,33 @@ public class FeedingScheme extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feeding_scheme);
 
-        firebaseDatabase = FirebaseDatabase.getInstance("https://snackinator-lic-default-rtdb.europe-west1.firebasedatabase.app");
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance("https://snackinator-lic-default-rtdb.europe-west1.firebasedatabase.app");
         databaseReference = firebaseDatabase.getReference();
 
         retrieveDataFromFirebase();
 
         breakfastTimeButtonClicked = false;
         breakfastTimeButton = findViewById(R.id.breakfastTime);
-        breakfastTimeButton.setOnClickListener(v->timePickerBreakfast(v,breakfastTimeButton));
+        breakfastTimeButton.setOnClickListener(v->timePickerBreakfast(breakfastTimeButton));
 
         lunchTimeButtonClicked = false;
         lunchTimeButton = findViewById(R.id.lunchTime);
-        lunchTimeButton.setOnClickListener(v->timePickerLunch(v,lunchTimeButton));
+        lunchTimeButton.setOnClickListener(v->timePickerLunch(lunchTimeButton));
 
         dinnerTimeButtonClicked = false;
         dinnerTimeButton = findViewById(R.id.dinnerTime);
-        dinnerTimeButton.setOnClickListener(v->timePickerDinner(v,dinnerTimeButton));
-        
-        backToHomeButton = findViewById(R.id.backButton);
+        dinnerTimeButton.setOnClickListener(v->timePickerDinner(dinnerTimeButton));
+
+        Button backToHomeButton = findViewById(R.id.backButton);
         backToHomeButton.setOnClickListener(v->backToHomePage());
 
-        waterChoiceButtonClicked = false;
         waterChoiceButton = findViewById(R.id.waterChoice);
 
         servingBreakfast = findViewById(R.id.servingSize1);
         servingLunch = findViewById(R.id.servingSize2);
         servingDinner = findViewById(R.id.servingSize3);
 
-        saveButton = findViewById(R.id.saveButton);
+        Button saveButton = findViewById(R.id.saveButton);
         saveButton.setOnClickListener(v->saveFeedingScheme());
 
     }
@@ -90,19 +79,12 @@ public class FeedingScheme extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Long hBkf = snapshot.child("/breakfastHour").getValue(Long.class);
                 Long mBkf = snapshot.child("/breakfastMinute").getValue(Long.class);
-                backupBreakfastH = hBkf == null? 0: Math.toIntExact(hBkf); //if there's nothing in the database it shall set the dafault value, which is 0
-                getBackupBreakfastM = mBkf == null? 0: Math.toIntExact(mBkf);
-                //saves the backup so when you see the time picker ui, you can start scrolling from the last time saved
 
                 Long hLch = snapshot.child("/lunchHour").getValue(Long.class);
                 Long mLch = snapshot.child("/lunchMinute").getValue(Long.class);
-                backupLunchH = hLch == null? 0: Math.toIntExact(hLch);
-                getBackupLunchM = mLch == null? 0: Math.toIntExact(mLch);
 
                 Long hDn = snapshot.child("/dinnerHour").getValue(Long.class);
                 Long mDn = snapshot.child("/dinnerMinute").getValue(Long.class);
-                backupDinnerH = hDn == null? 0: Math.toIntExact(hDn);
-                getBackupDinnerM = mDn == null? 0:  Math.toIntExact(mDn);
 
                 String sBkf = snapshot.child("/servingBreakfast").getValue(String.class);
 
@@ -221,7 +203,7 @@ public class FeedingScheme extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void timePickerBreakfast(View view, Button btn)
+    public void timePickerBreakfast(Button btn)
     {
         breakfastTimeButtonClicked = true; //if you've arrived here it means the button has been clicked and so the bool is set to true
         TimePickerDialog.OnTimeSetListener onTimeSetListener = (view1, hourPicker, minutePicker) -> {
@@ -229,15 +211,18 @@ public class FeedingScheme extends AppCompatActivity {
             minuteBreakfast = minutePicker;
             btn.setText(String.format(Locale.getDefault(),"%02d:%02d",hourBreakfast,minuteBreakfast)); // saves the text to what you picked
         };
-        int timePickerStyle = AlertDialog.THEME_HOLO_DARK; // !!!!!!!!!! deprecated
+
+        String[] splitPreviouslySetTime = btn.getText().toString().split(":");
+        backupBreakfastH = Integer.parseInt(splitPreviouslySetTime[0]);
+        backupBreakfastM = Integer.parseInt(splitPreviouslySetTime[1]);
 
         TimePickerDialog timePickerDialog;
-        timePickerDialog = new TimePickerDialog(this, timePickerStyle, onTimeSetListener, backupBreakfastH, getBackupBreakfastM, true); // what you see when you open the time picker
+        timePickerDialog = new TimePickerDialog(this, android.R.style.Theme_Holo_Dialog, onTimeSetListener, backupBreakfastH, backupBreakfastM, true); // what you see when you open the time picker
         //it is set to the backup values so you don't have to start scrolling from 00:00, but from the last values saved
         timePickerDialog.show(); //shows the ui where you can pick the time
     }
 
-    public void timePickerLunch(View view, Button btn)
+    public void timePickerLunch(Button btn)
     {
         lunchTimeButtonClicked = true;
         TimePickerDialog.OnTimeSetListener onTimeSetListener = (view1, hourPicker, minutePicker) -> {
@@ -245,13 +230,17 @@ public class FeedingScheme extends AppCompatActivity {
             minuteLunch = minutePicker;
             btn.setText(String.format(Locale.getDefault(),"%02d:%02d",hourLunch,minuteLunch));
         };
-        int timePickerStyle = AlertDialog.THEME_HOLO_DARK; // !!!!!!!!!! deprecated
+
+        String[] splitPreviouslySetTime = btn.getText().toString().split(":");
+        backupLunchH = Integer.parseInt(splitPreviouslySetTime[0]);
+        backupLunchM = Integer.parseInt(splitPreviouslySetTime[1]);
+
         TimePickerDialog timePickerDialog;
-        timePickerDialog = new TimePickerDialog(this,timePickerStyle,onTimeSetListener,backupLunchH,getBackupLunchM,true);
+        timePickerDialog = new TimePickerDialog(this,android.R.style.Theme_Holo_Dialog,onTimeSetListener,backupLunchH, backupLunchM,true);
         timePickerDialog.show();
     }
 
-    public void timePickerDinner(View view, Button btn)
+    public void timePickerDinner(Button btn)
     {
         dinnerTimeButtonClicked = true;
         TimePickerDialog.OnTimeSetListener onTimeSetListener = (view1, hourPicker, minutePicker) -> {
@@ -259,9 +248,13 @@ public class FeedingScheme extends AppCompatActivity {
             minuteDinner = minutePicker;
             btn.setText(String.format(Locale.getDefault(),"%02d:%02d",hourDinner,minuteDinner));
         };
-        int timePickerStyle = AlertDialog.THEME_HOLO_DARK; // !!!!!!!!!! deprecated
+
+        String[] splitPreviouslySetTime = btn.getText().toString().split(":"); //the previously set hour that would be 0 if nothing was set
+        backupDinnerH = Integer.parseInt(splitPreviouslySetTime[0]);
+        backupDinnerM = Integer.parseInt(splitPreviouslySetTime[1]);
+
         TimePickerDialog timePickerDialog;
-        timePickerDialog = new TimePickerDialog(this,timePickerStyle,onTimeSetListener,backupDinnerH,getBackupDinnerM,true);
+        timePickerDialog = new TimePickerDialog(this, android.R.style.Theme_Holo_Dialog,onTimeSetListener,backupDinnerH, backupDinnerM,true);
         timePickerDialog.show();
     }
 
