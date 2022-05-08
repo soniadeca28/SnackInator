@@ -25,8 +25,12 @@ public class FeedingScheme extends AppCompatActivity {
     private Button lunchTimeButton;
     private Button dinnerTimeButton;
     private ToggleButton waterChoiceButton;
-    private int hourBreakfast,minuteBreakfast,hourLunch,minuteLunch, hourDinner,minuteDinner,
-    backupBreakfastH, backupBreakfastM, backupLunchH, backupLunchM, backupDinnerH, backupDinnerM;
+    private int hourBreakfast;
+    private int minuteBreakfast;
+    private int hourLunch;
+    private int minuteLunch;
+    private int hourDinner;
+    private int minuteDinner;
     private boolean breakfastTimeButtonClicked;
     private boolean lunchTimeButtonClicked;
     private boolean dinnerTimeButtonClicked;
@@ -213,8 +217,8 @@ public class FeedingScheme extends AppCompatActivity {
         };
 
         String[] splitPreviouslySetTime = btn.getText().toString().split(":");
-        backupBreakfastH = Integer.parseInt(splitPreviouslySetTime[0]);
-        backupBreakfastM = Integer.parseInt(splitPreviouslySetTime[1]);
+        int backupBreakfastH = Integer.parseInt(splitPreviouslySetTime[0]);
+        int backupBreakfastM = Integer.parseInt(splitPreviouslySetTime[1]);
 
         TimePickerDialog timePickerDialog;
         timePickerDialog = new TimePickerDialog(this, android.R.style.Theme_Holo_Dialog, onTimeSetListener, backupBreakfastH, backupBreakfastM, true); // what you see when you open the time picker
@@ -232,11 +236,11 @@ public class FeedingScheme extends AppCompatActivity {
         };
 
         String[] splitPreviouslySetTime = btn.getText().toString().split(":");
-        backupLunchH = Integer.parseInt(splitPreviouslySetTime[0]);
-        backupLunchM = Integer.parseInt(splitPreviouslySetTime[1]);
+        int backupLunchH = Integer.parseInt(splitPreviouslySetTime[0]);
+        int backupLunchM = Integer.parseInt(splitPreviouslySetTime[1]);
 
         TimePickerDialog timePickerDialog;
-        timePickerDialog = new TimePickerDialog(this,android.R.style.Theme_Holo_Dialog,onTimeSetListener,backupLunchH, backupLunchM,true);
+        timePickerDialog = new TimePickerDialog(this,android.R.style.Theme_Holo_Dialog,onTimeSetListener, backupLunchH, backupLunchM,true);
         timePickerDialog.show();
     }
 
@@ -250,11 +254,11 @@ public class FeedingScheme extends AppCompatActivity {
         };
 
         String[] splitPreviouslySetTime = btn.getText().toString().split(":"); //the previously set hour that would be 0 if nothing was set
-        backupDinnerH = Integer.parseInt(splitPreviouslySetTime[0]);
-        backupDinnerM = Integer.parseInt(splitPreviouslySetTime[1]);
+        int backupDinnerH = Integer.parseInt(splitPreviouslySetTime[0]);
+        int backupDinnerM = Integer.parseInt(splitPreviouslySetTime[1]);
 
         TimePickerDialog timePickerDialog;
-        timePickerDialog = new TimePickerDialog(this, android.R.style.Theme_Holo_Dialog,onTimeSetListener,backupDinnerH, backupDinnerM,true);
+        timePickerDialog = new TimePickerDialog(this, android.R.style.Theme_Holo_Dialog,onTimeSetListener, backupDinnerH, backupDinnerM,true);
         timePickerDialog.show();
     }
 
