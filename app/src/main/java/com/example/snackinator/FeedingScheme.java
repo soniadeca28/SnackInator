@@ -339,6 +339,7 @@ public class FeedingScheme extends AppCompatActivity {
     private void backToHomePage() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+        finish();
     }
 
     public void timePickerBreakfast(Button btn) {

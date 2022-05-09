@@ -40,12 +40,21 @@ public class MainActivity extends AppCompatActivity {
 
     public void validateCode(View v)
     {
+        boolean codeContainsForbiddenSymbols = code.getText().toString().contains(".") || code.getText().toString().contains("#") ||
+                code.getText().toString().contains("$") || code.getText().toString().contains("[") || code.getText().toString().contains("]");
+
+        if(codeContainsForbiddenSymbols)
+        {
+            code.setText("");
+        }
+
         databaseReference.child("SnackInators").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(!snapshot.hasChild(code.getText().toString().trim()) || code.getText().toString().trim().isEmpty())
+                if(!snapshot.hasChild(code.getText().toString()) || code.getText().toString().isEmpty())
                 {
                     Toast.makeText(MainActivity.this, "The code you introduced is incorrect. Please try again! \n", Toast.LENGTH_SHORT).show();
+                    code.setText("");
                     Log.println(Log.INFO, "INFO_userWarning", "Did not find the introduced code in Firebase \n");
                     return;
                 }
@@ -54,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = new Intent(MainActivity.this,FeedingScheme.class);
                     intent.putExtra("CODE",code.getText().toString().trim());
                     startActivity(intent);
+                    finish();
                 }
             }
 
