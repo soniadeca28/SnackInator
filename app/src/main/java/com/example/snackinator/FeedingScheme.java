@@ -197,7 +197,7 @@ public class FeedingScheme extends AppCompatActivity {
                     && (servingDinner.getText().toString().trim().isEmpty() || servingDinner.getText().toString().trim().equals(getString(R.string._0)));
             // and all servings are still default values
 
-            boolean wrongOrder = (!(servingLunch.getText().toString().trim().equals(getString(R.string._0)) && !servingLunch.getText().toString().trim().isEmpty())
+            boolean wrongOrder = ((!servingLunch.getText().toString().trim().equals(getString(R.string._0)) && !servingLunch.getText().toString().trim().isEmpty())
             && (breakfastTime.after(lunchTime) || breakfastTime.after(dinnerTime) || lunchTime.after(dinnerTime)))
                     // all three meal servings are set but they are in the wrong order
                     || ((servingLunch.getText().toString().trim().equals(getString(R.string._0)) || servingLunch.getText().toString().trim().isEmpty()) && breakfastTime.after(dinnerTime));
