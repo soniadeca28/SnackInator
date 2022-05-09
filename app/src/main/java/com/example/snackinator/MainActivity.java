@@ -53,10 +53,9 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(!snapshot.hasChild(code.getText().toString()) || code.getText().toString().isEmpty())
                 {
-                    Toast.makeText(MainActivity.this, "The code you introduced is incorrect. Please try again! \n", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "The code you introduced is invalid. Please try again! \n", Toast.LENGTH_SHORT).show();
                     code.setText("");
                     Log.println(Log.INFO, "INFO_userWarning", "Did not find the introduced code in Firebase \n");
-                    return;
                 }
                 else
                 {
