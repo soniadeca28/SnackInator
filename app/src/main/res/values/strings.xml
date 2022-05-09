@@ -6,4 +6,21 @@
     <string name="validate">validate</string>
     <string name="code">Code</string>
     <string name="create_account">create account</string>
+    <string name="breakfast">Breakfast</string>
+    <string name="_00_00">00:00</string>
+    <string name="lunch">Lunch</string>
+    <string name="opt">(opt.)</string>
+    <string name="dinner">Dinner</string>
+    <string name="maxTime">* Max. 12h between meals</string>
+    <string name="serving">Serving</string>
+    <string name="g">g</string>
+    <string name="_100">100</string>
+    <string name="_0">0</string>
+    <string name="water">Water Fountain</string>
+    <string name="save">Save</string>
+    <string name="back">❮</string>
+    <string name="feedingScheme">Feeding Scheme</string>
+    <string name="once_a_day">Once a day</string>
+    <string name="all_day">All day</string>
+    <string name="meal">Meal</string>
 </resources>

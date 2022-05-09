@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dark_grey"
+    tools:context=".FeedingScheme"
+    tools:layout_editor_absoluteX="0dp"
+    tools:layout_editor_absoluteY="10dp">
+
+    <Button
+        android:id="@+id/backButton"
+        style="?android:attr/buttonCornerRadius"
+        android:layout_width="71dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="306dp"
+        android:layout_marginBottom="21dp"
+        android:backgroundTint="@color/light_blue"
+        android:text="@string/back"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/feedingSchemeTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="TextContrastCheck"
+        tools:targetApi="p" />
+
+    <TextView
+        android:id="@+id/feedingSchemeTitle"
+        android:layout_width="391dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="85dp"
+        android:layout_marginEnd="2dp"
+        android:layout_marginBottom="39dp"
+        android:text="@string/feedingScheme"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toTopOf="@+id/servingSize1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/servingSize1"
+        android:layout_width="75dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="1dp"
+        android:hint="@string/_0"
+        android:importantForAutofill="no"
+        android:inputType="number"
+        android:textAlignment="textStart"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        android:textColorLink="@color/baby_blue"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/grams1"
+        app:layout_constraintEnd_toStartOf="@+id/grams1"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/breakfastTime"
+        app:layout_constraintTop_toTopOf="@+id/grams1"
+        app:layout_constraintVertical_bias="1.0"
+        tools:ignore="DuplicateSpeakableTextCheck" />
+
+    <Button
+        android:id="@+id/saveButton"
+        style="?android:attr/buttonCornerRadius"
+        android:layout_width="196dp"
+        android:layout_height="54dp"
+        android:layout_marginStart="79dp"
+        android:layout_marginTop="89dp"
+        android:layout_marginEnd="100dp"
+        android:layout_marginBottom="76dp"
+        android:backgroundTint="@color/light_blue"
+        android:text="@string/save"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/water"
+        tools:ignore="TextContrastCheck"
+        tools:targetApi="p" />
+
+    <ToggleButton
+        android:id="@+id/waterChoice"
+        android:layout_width="195dp"
+        android:layout_height="49dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginBottom="89dp"
+        android:backgroundTint="@color/white"
+        android:backgroundTintMode="multiply"
+        android:checked="true"
+        android:textColor="@color/dark_grey"
+        android:textOff="@string/once_a_day"
+        android:textOn="@string/all_day"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toTopOf="@+id/saveButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/water"
+        app:layout_constraintTop_toBottomOf="@+id/servingSize3"
+        app:layout_constraintVertical_bias="0.333"
+        tools:ignore="TouchTargetSizeCheck" />
+
+    <TextView
+        android:id="@+id/water"
+        android:layout_width="195dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="7dp"
+        android:text="@string/water"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/waterChoice"
+        app:layout_constraintEnd_toStartOf="@+id/waterChoice"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/waterChoice"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/lunch"
+        android:layout_width="116dp"
+        android:layout_height="41dp"
+        android:layout_marginBottom="1dp"
+        android:text="@string/lunch"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/lunchTime"
+        app:layout_constraintEnd_toStartOf="@+id/lunchTime"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/lunchTime"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <TextView
+        android:id="@+id/lunch_opt"
+        android:layout_width="46dp"
+        android:layout_height="35dp"
+        android:layout_marginBottom="1dp"
+        android:text="@string/opt"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/lunchTime"
+        app:layout_constraintEnd_toStartOf="@+id/lunchTime"
+        app:layout_constraintHorizontal_bias="0.879"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/lunchTime"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <EditText
+        android:id="@+id/servingSize3"
+        android:layout_width="76dp"
+        android:layout_height="49dp"
+        android:hint="@string/_0"
+        android:importantForAutofill="no"
+        android:inputType="number"
+        android:textAlignment="textStart"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        android:textColorLink="@color/baby_blue"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/grams3"
+        app:layout_constraintEnd_toStartOf="@+id/grams3"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/dinnerTime"
+        app:layout_constraintTop_toTopOf="@+id/grams3"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <Button
+        android:id="@+id/grams1"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="75dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="40dp"
+        android:backgroundTint="@color/dark_grey"
+        android:text="@string/g"
+        android:textAlignment="textStart"
+        android:textAllCaps="false"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/servingSize1"
+        app:layout_constraintTop_toBottomOf="@+id/feedingSchemeTitle"
+        tools:ignore="DuplicateSpeakableTextCheck" />
+
+    <EditText
+        android:id="@+id/servingSize2"
+        android:layout_width="74dp"
+        android:layout_height="48dp"
+        android:hint="@string/_0"
+        android:importantForAutofill="no"
+        android:inputType="number"
+        android:textAlignment="textStart"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        android:textColorLink="@color/baby_blue"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/grams2"
+        app:layout_constraintEnd_toStartOf="@+id/grams2"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/lunchTime"
+        app:layout_constraintTop_toTopOf="@+id/grams2"
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="DuplicateSpeakableTextCheck" />
+
+    <Button
+        android:id="@+id/breakfastTime"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="97dp"
+        android:layout_height="48dp"
+        android:backgroundTint="@color/dark_grey"
+        android:text="@string/_00_00"
+        android:textAlignment="textStart"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/servingSize1"
+        app:layout_constraintEnd_toStartOf="@+id/servingSize1"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/breakfast"
+        app:layout_constraintTop_toTopOf="@+id/servingSize1"
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="DuplicateSpeakableTextCheck" />
+
+    <Button
+        android:id="@+id/lunchTime"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="97dp"
+        android:layout_height="48dp"
+        android:backgroundTint="@color/dark_grey"
+        android:text="@string/_00_00"
+        android:textAlignment="textStart"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/servingSize2"
+        app:layout_constraintEnd_toStartOf="@+id/servingSize2"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/lunch"
+        app:layout_constraintTop_toTopOf="@+id/servingSize2"
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="DuplicateSpeakableTextCheck" />
+
+    <TextView
+        android:id="@+id/breakfast"
+        android:layout_width="114dp"
+        android:layout_height="40dp"
+        android:text="@string/breakfast"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/breakfastTime"
+        app:layout_constraintEnd_toStartOf="@+id/breakfastTime"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/breakfastTime"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <Button
+        android:id="@+id/dinnerTime"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="97dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="1dp"
+        android:backgroundTint="@color/dark_grey"
+        android:text="@string/_00_00"
+        android:textAlignment="textStart"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/servingSize3"
+        app:layout_constraintEnd_toStartOf="@+id/servingSize3"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/dinner"
+        app:layout_constraintTop_toTopOf="@+id/servingSize3"
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="DuplicateSpeakableTextCheck" />
+
+    <TextView
+        android:id="@+id/dinner"
+        android:layout_width="114dp"
+        android:layout_height="42dp"
+        android:text="@string/dinner"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/dinnerTime"
+        app:layout_constraintEnd_toStartOf="@+id/dinnerTime"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/dinnerTime"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <TextView
+        android:id="@+id/maxTime"
+        android:layout_width="339dp"
+        android:layout_height="21dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="47dp"
+        android:layout_marginBottom="39dp"
+        android:text="@string/maxTime"
+        android:textColor="@color/baby_blue"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toTopOf="@+id/water"
+        app:layout_constraintEnd_toEndOf="@+id/grams3"
+        app:layout_constraintStart_toStartOf="@+id/dinner"
+        app:layout_constraintTop_toBottomOf="@+id/dinnerTime" />
+
+    <Button
+        android:id="@+id/grams3"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="69dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="59dp"
+        android:layout_marginBottom="51dp"
+        android:backgroundTint="@color/dark_grey"
+        android:text="@string/g"
+        android:textAlignment="textStart"
+        android:textAllCaps="false"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/waterChoice"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/servingSize3"
+        app:layout_constraintTop_toBottomOf="@+id/grams2"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/grams2"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="71dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="56dp"
+        android:layout_marginBottom="157dp"
+        android:backgroundTint="@color/dark_grey"
+        android:text="@string/g"
+        android:textAlignment="textStart"
+        android:textAllCaps="false"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/waterChoice"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/servingSize2"
+        app:layout_constraintTop_toBottomOf="@+id/grams1"
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="DuplicateSpeakableTextCheck" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group19"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier28"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="left" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier29"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier30"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="left"
+        app:constraint_referenced_ids="feedingSchemeTitle" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier31"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top"
+        app:constraint_referenced_ids="feedingSchemeTitle"
+        tools:layout_editor_absoluteY="85dp" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier32"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top"
+        app:constraint_referenced_ids="breakfast,breakfastTime,servingSize1,grams1"
+        tools:layout_editor_absoluteY="175dp" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier33"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top"
+        app:constraint_referenced_ids="lunch,lunchTime,servingSize2,grams2"
+        tools:layout_editor_absoluteY="280dp" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier34"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top"
+        app:constraint_referenced_ids="dinner,dinnerTime,servingSize3,grams3"
+        tools:layout_editor_absoluteY="388dp" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier35"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top"
+        app:constraint_referenced_ids="water,waterChoice"
+        tools:layout_editor_absoluteY="499dp" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier36"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top"
+        app:constraint_referenced_ids="saveButton"
+        tools:layout_editor_absoluteY="619dp" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier37"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="left"
+        app:constraint_referenced_ids="backButton"
+        tools:layout_editor_absoluteX="16dp" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier38"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top"
+        app:constraint_referenced_ids="backButton"
+        tools:layout_editor_absoluteY="16dp" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
