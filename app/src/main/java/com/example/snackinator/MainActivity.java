@@ -1,20 +1,38 @@
 package com.example.snackinator;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity {
 
     Button validate;
+    TextView code;
+
+    final String databaseLink = "https://snackinator-lic-default-rtdb.europe-west1.firebasedatabase.app";
+
+    FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance(databaseLink);
+    private final DatabaseReference databaseReference = firebaseDatabase.getReference();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        code = findViewById(R.id.code);
 
         validate = findViewById(R.id.validate);
         validate.setOnClickListener(this::validateCode);
@@ -22,8 +40,30 @@ public class MainActivity extends AppCompatActivity {
 
     public void validateCode(View v)
     {
-        Intent intent = new Intent(this,FeedingScheme.class);
-        startActivity(intent);
+        databaseReference.child("SnackInators").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(!snapshot.hasChild(code.getText().toString().trim()) || code.getText().toString().trim().isEmpty())
+                {
+                    Toast.makeText(MainActivity.this, "The code you introduced is incorrect. Please try again! \n", Toast.LENGTH_SHORT).show();
+                    Log.println(Log.INFO, "INFO_userWarning", "Did not find the introduced code in Firebase \n");
+                    return;
+                }
+                else
+                {
+                    Intent intent = new Intent(MainActivity.this,FeedingScheme.class);
+                    intent.putExtra("CODE",code.getText().toString().trim());
+                    startActivity(intent);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(MainActivity.this, "We encountered an error when verifying your code. Please try again! \n", Toast.LENGTH_SHORT).show();
+                Log.println(Log.ERROR, "WARNING_firebase", "Could not retrieve data from firebase to verify user-introduced code \n");
+            }
+        });
+
     }
 
 }

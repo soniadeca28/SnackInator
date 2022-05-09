@@ -23,6 +23,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public class FeedingScheme extends AppCompatActivity {
 
@@ -41,11 +42,15 @@ public class FeedingScheme extends AppCompatActivity {
     private boolean dinnerTimeButtonClicked;
     private TextView servingBreakfast, servingLunch, servingDinner;
     private DatabaseReference databaseReference;
+    private String CODE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feeding_scheme);
+
+        Bundle info = getIntent().getExtras();
+        CODE = info.getString("CODE");
 
         final String databaseLink = "https://snackinator-lic-default-rtdb.europe-west1.firebasedatabase.app";
 
@@ -82,9 +87,14 @@ public class FeedingScheme extends AppCompatActivity {
 
 
     private void retrieveDataFromFirebase() {
-        databaseReference.child("/dataFromApp").addValueEventListener(new ValueEventListener() {
+        databaseReference.child("SnackInators").child(CODE).child("/dataFromApp").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                if (!snapshot.hasChildren()) {
+                    databaseReference.child("SnackInators").child(CODE).child("/Exists").setValue(true);
+                }
+
                 Long hBkf = snapshot.child("/breakfastHour").getValue(Long.class);
                 Long mBkf = snapshot.child("/breakfastMinute").getValue(Long.class);
 
@@ -94,11 +104,11 @@ public class FeedingScheme extends AppCompatActivity {
                 Long hDn = snapshot.child("/dinnerHour").getValue(Long.class);
                 Long mDn = snapshot.child("/dinnerMinute").getValue(Long.class);
 
-                String sBkf = snapshot.child("/servingBreakfast").getValue(String.class);
+                Integer sBkf = snapshot.child("/servingBreakfast").getValue(Integer.class);
 
-                String sLch = snapshot.child("/servingLunch").getValue(String.class);
+                Integer sLch = snapshot.child("/servingLunch").getValue(Integer.class);
 
-                String sDn = snapshot.child("/servingDinner").getValue(String.class);
+                Integer sDn = snapshot.child("/servingDinner").getValue(Integer.class);
 
                 Long fountain = snapshot.child("/fountainAllDay").getValue(Long.class);
 
@@ -123,19 +133,19 @@ public class FeedingScheme extends AppCompatActivity {
                 if (sBkf == null) {
                     servingBreakfast.setText("0");
                 } else {
-                    servingBreakfast.setText(sBkf.trim());
+                    servingBreakfast.setText(String.valueOf(sBkf));
                 }
 
                 if (sLch == null) {
                     servingLunch.setText("0");
                 } else {
-                    servingLunch.setText(sLch.trim());
+                    servingLunch.setText(String.valueOf(sLch));
                 }
 
                 if (sDn == null) {
                     servingDinner.setText("0");
                 } else {
-                    servingDinner.setText(sDn.trim());
+                    servingDinner.setText(String.valueOf(sDn));
                 }
 
                 if (fountain == null || fountain == 1) {
@@ -149,7 +159,7 @@ public class FeedingScheme extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(FeedingScheme.this, "Some of your data could not be retrieved from our database! \n", Toast.LENGTH_SHORT).show();
-                Log.println(Log.WARN, "WARNING_firebase", "Could not retrieve some of the data from firebase \n");
+                Log.println(Log.ERROR, "WARNING_firebase", "Could not retrieve some of the data from firebase to update data in Feeding Scheme\n");
                 breakfastTimeButton.setText(String.format(Locale.getDefault(), "%02d:%02d", 0, 0));
                 lunchTimeButton.setText(String.format(Locale.getDefault(), "%02d:%02d", 0, 0));
                 dinnerTimeButton.setText(String.format(Locale.getDefault(), "%02d:%02d", 0, 0));
@@ -165,33 +175,96 @@ public class FeedingScheme extends AppCompatActivity {
 
         SimpleDateFormat timeParser = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
 
+        timeParser.setTimeZone(TimeZone.getTimeZone("UTC"));
+
         try {
-            Date breakfastTime = timeParser.parse(breakfastTimeButton.getText().toString());
+            Date breakfastTime = timeParser.parse(breakfastTimeButton.getText().toString().trim());
 
-            Date lunchTime = timeParser.parse(lunchTimeButton.getText().toString());
+            Date lunchTime = timeParser.parse(lunchTimeButton.getText().toString().trim());
 
-            Date dinnerTime = timeParser.parse(dinnerTimeButton.getText().toString());
+            Date dinnerTime = timeParser.parse(dinnerTimeButton.getText().toString().trim());
 
             assert breakfastTime != null;
             assert lunchTime != null;
             assert dinnerTime != null;
 
-            if (breakfastTime.after(lunchTime) || breakfastTime.after(dinnerTime) || lunchTime.after(dinnerTime)) {
-                warningMessages += "The times you set for the meals are not properly ordered! \n\n";
-            }
+            boolean nothingSet = breakfastTime.getTime() / (float) oneHourInMilliseconds == 0
+                    && lunchTime.getTime() / (float) oneHourInMilliseconds == 0
+                    && dinnerTime.getTime() / (float) oneHourInMilliseconds == 0
+                    // all meal times are still default hours
+                    && (servingBreakfast.getText().toString().trim().isEmpty() || servingBreakfast.getText().toString().trim().equals(getString(R.string._0)))
+                    && (servingLunch.getText().toString().trim().isEmpty() || servingLunch.getText().toString().trim().equals(getString(R.string._0)))
+                    && (servingDinner.getText().toString().trim().isEmpty() || servingDinner.getText().toString().trim().equals(getString(R.string._0)));
+            // and all servings are still default values
 
-            if (breakfastTime.getTime() / (double) oneHourInMilliseconds + 24 - dinnerTime.getTime() / (double) oneHourInMilliseconds > 12) // time gap between dinner and next day's breakfast
+            boolean wrongOrder = breakfastTime.after(lunchTime) || breakfastTime.after(dinnerTime) || lunchTime.after(dinnerTime)
+                    // all three meal servings are set but they are in the wrong order
+                    || ((servingLunch.getText().toString().trim().equals(getString(R.string._0)) || servingLunch.getText().toString().trim().isEmpty()) && breakfastTime.after(dinnerTime));
+            // only breakfast and lunch are set and they are in the wrong order
+
+            boolean lunchIsSet = !servingLunch.getText().toString().trim().equals(getString(R.string._0)) && !servingLunch.getText().toString().trim().isEmpty();
+
+            boolean dinnerToBreakfastGapTooBig = breakfastTime.getTime() / (double) oneHourInMilliseconds + 24 - dinnerTime.getTime() / (double) oneHourInMilliseconds > 12;
+
+            boolean breakfastToLunchGapTooBig = lunchTime.getTime() / (double) oneHourInMilliseconds - breakfastTime.getTime() / (double) oneHourInMilliseconds > 12;
+
+            boolean lunchToDinnerGapTooBig = dinnerTime.getTime() / (double) oneHourInMilliseconds - lunchTime.getTime() / (double) oneHourInMilliseconds > 12;
+
+            boolean breakfastToDinnerGapTooBig = dinnerTime.getTime() / (double) oneHourInMilliseconds - breakfastTime.getTime() / (double) oneHourInMilliseconds > 12;
+
+            boolean breakfastOrDinnerNotSet = servingBreakfast.getText().toString().trim().equals(getString(R.string._0)) || servingDinner.getText().toString().trim().equals(getString(R.string._0)) ||
+                    servingBreakfast.getText().toString().trim().isEmpty() || servingDinner.getText().toString().trim().isEmpty();
+
+            boolean noHourSet = breakfastTime.getTime() / (float) oneHourInMilliseconds == 0
+                    && lunchTime.getTime() / (float) oneHourInMilliseconds == 0
+                    && dinnerTime.getTime() / (float) oneHourInMilliseconds == 0;
+            // all meal times are still default hours
+
+            boolean noServingSet = (servingBreakfast.getText().toString().trim().isEmpty() || servingBreakfast.getText().toString().trim().equals(getString(R.string._0)))
+                    && (servingLunch.getText().toString().trim().isEmpty() || servingLunch.getText().toString().trim().equals(getString(R.string._0)))
+                    && (servingDinner.getText().toString().trim().isEmpty() || servingDinner.getText().toString().trim().equals(getString(R.string._0)));
+            // and all servings are still default values
+
+            if (nothingSet || noHourSet || noServingSet) // if there's nothing set there's no point in verifying anything else
             {
-                warningMessages += "There is too much time between dinner and breakfast. This could be dangerous for your pet! \n\n";
-            }
+                warningMessages = "You left important fields empty \n\n";
+            } else { //if values are set but they are wrong
 
-            if (lunchTime.getTime() / (double) oneHourInMilliseconds - breakfastTime.getTime() / (double) oneHourInMilliseconds > 12) //time gap between lunch and breakfast of the same day
-            {
-                warningMessages += "There is too much time between breakfast and lunch. This could be dangerous for your pet! \n\n";
-            }
+                if (wrongOrder) {
+                    warningMessages += "The times you set for the meals are not properly ordered! \n\n";
+                }
 
-            if (dinnerTime.getTime() / (double) oneHourInMilliseconds - lunchTime.getTime() / (double) oneHourInMilliseconds > 12) {
-                warningMessages += "There is too much time between lunch and dinner. This could be dangerous for your pet! \n\n";
+                if (dinnerToBreakfastGapTooBig && !wrongOrder) // time gap between dinner and next day's breakfast too big, if the order is wrong there's no point to pop the warning
+                {
+                    warningMessages += "There is too much time between dinner and breakfast of the following day. To keep your pet safe, no more than 12 hours should pass between meals!\n\n";
+                }
+
+                if (lunchIsSet) { //lunch is set so there should be 3 meals per day
+
+                    if (breakfastToLunchGapTooBig && !wrongOrder) //time gap between lunch and breakfast of the same day, if the order is wrong there's no point to pop the warning
+                    {
+                        warningMessages += "There is too much time between breakfast and lunch. To keep your pet safe, no more than 12 hours should pass between meals!\n\n";
+                    }
+
+                    if (lunchToDinnerGapTooBig && !wrongOrder) {
+                        warningMessages += "There is too much time between lunch and dinner. To keep your pet safe, no more than 12 hours should pass between meals!\n\n";
+                    }
+
+                    if (breakfastOrDinnerNotSet) // breakfast or dinner is not set
+                    {
+                        warningMessages += "Breakfast and dinner are mandatory!\n\n";
+                    }
+                } else { //lunch is not set so there should be 2 meals per day
+
+                    if (breakfastOrDinnerNotSet) // breakfast or dinner is not set --> less than 2 meals per day
+                    {
+                        warningMessages += "Only lunch is optional. Breakfast and dinner are mandatory (the minimum number of meals per day is 2)!\n\n";
+                    } else if (breakfastToDinnerGapTooBig && !wrongOrder) //dinner and breakfast are set, but the time gap between them (same day) is too much
+                    {
+                        warningMessages += "There is too much time between breakfast and dinner of the same day. To keep your pet safe, no more than 12 hours should pass between meals!\n\n";
+                    }
+                }
+
             }
 
         } catch (ParseException e) {
@@ -223,34 +296,38 @@ public class FeedingScheme extends AppCompatActivity {
 
         if (breakfastTimeButtonClicked) // checks if the button has been clicked
         {
-            databaseReference.child("/dataFromApp").child("/breakfastHour").setValue(hourBreakfast); //if it was clicked it saves the new time
-            databaseReference.child("/dataFromApp").child("/breakfastMinute").setValue(minuteBreakfast);
+            databaseReference.child("SnackInators").child(CODE).child("/dataFromApp").child("/breakfastHour").setValue(hourBreakfast); //if it was clicked it saves the new time
+            databaseReference.child("SnackInators").child(CODE).child("/dataFromApp").child("/breakfastMinute").setValue(minuteBreakfast);
             breakfastTimeButtonClicked = false;
         }//if the button wasn't clicked it doesn't save anything, bc if it did save it would be 0 for both hour and minutes!!
 
         if (lunchTimeButtonClicked) {
-            databaseReference.child("/dataFromApp").child("/lunchHour").setValue(hourLunch);
-            databaseReference.child("/dataFromApp").child("/lunchMinute").setValue(minuteLunch);
+            databaseReference.child("SnackInators").child(CODE).child("/dataFromApp").child("/lunchHour").setValue(hourLunch);
+            databaseReference.child("SnackInators").child(CODE).child("/dataFromApp").child("/lunchMinute").setValue(minuteLunch);
             lunchTimeButtonClicked = false;
         }
 
         if (dinnerTimeButtonClicked) {
-            databaseReference.child("/dataFromApp").child("/dinnerHour").setValue(hourDinner);
-            databaseReference.child("/dataFromApp").child("/dinnerMinute").setValue(minuteDinner);
+            databaseReference.child("SnackInators").child(CODE).child("/dataFromApp").child("/dinnerHour").setValue(hourDinner);
+            databaseReference.child("SnackInators").child(CODE).child("/dataFromApp").child("/dinnerMinute").setValue(minuteDinner);
             dinnerTimeButtonClicked = false;
         }
 
         if (waterChoiceButton.getText().toString().trim().equals("All day")) {
-            databaseReference.child("/dataFromApp").child("/fountainAllDay").setValue(1);
+            databaseReference.child("SnackInators").child(CODE).child("/dataFromApp").child("/fountainAllDay").setValue(1);
         } else {
-            databaseReference.child("/dataFromApp").child("/fountainAllDay").setValue(0);
+            databaseReference.child("SnackInators").child(CODE).child("/dataFromApp").child("/fountainAllDay").setValue(0);
         }
 
-        databaseReference.child("/dataFromApp").child("/servingBreakfast").setValue(servingBreakfast.getText().toString().trim());
+        databaseReference.child("SnackInators").child(CODE).child("/dataFromApp").child("/servingBreakfast").setValue(Integer.parseInt(servingBreakfast.getText().toString().trim()));
 
-        databaseReference.child("/dataFromApp").child("/servingLunch").setValue(servingLunch.getText().toString().trim());
+        if (servingLunch.getText().toString().trim().isEmpty()) {
+            databaseReference.child("SnackInators").child(CODE).child("/dataFromApp").child("/servingLunch").setValue(0);
+        } else {
+            databaseReference.child("SnackInators").child(CODE).child("/dataFromApp").child("/servingLunch").setValue(Integer.parseInt(servingLunch.getText().toString().trim()));
+        }
 
-        databaseReference.child("/dataFromApp").child("/servingDinner").setValue(servingDinner.getText().toString().trim());
+        databaseReference.child("SnackInators").child(CODE).child("/dataFromApp").child("/servingDinner").setValue(Integer.parseInt(servingDinner.getText().toString().trim()));
 
         Toast.makeText(FeedingScheme.this, "Saved successfully! \n", Toast.LENGTH_SHORT).show();
 

@@ -107,7 +107,24 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/water"
         app:layout_constraintTop_toBottomOf="@+id/servingSize3"
+        app:layout_constraintVertical_bias="0.333"
         tools:ignore="TouchTargetSizeCheck" />
+
+    <TextView
+        android:id="@+id/water"
+        android:layout_width="195dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="7dp"
+        android:text="@string/water"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/waterChoice"
+        app:layout_constraintEnd_toStartOf="@+id/waterChoice"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/waterChoice"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/lunch"
@@ -120,6 +137,21 @@
         app:layout_constraintBottom_toBottomOf="@+id/lunchTime"
         app:layout_constraintEnd_toStartOf="@+id/lunchTime"
         app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/lunchTime"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <TextView
+        android:id="@+id/lunch_opt"
+        android:layout_width="46dp"
+        android:layout_height="35dp"
+        android:layout_marginBottom="1dp"
+        android:text="@string/opt"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/lunchTime"
+        app:layout_constraintEnd_toStartOf="@+id/lunchTime"
+        app:layout_constraintHorizontal_bias="0.879"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/lunchTime"
         app:layout_constraintVertical_bias="1.0" />
@@ -159,22 +191,6 @@
         app:layout_constraintStart_toEndOf="@+id/servingSize1"
         app:layout_constraintTop_toBottomOf="@+id/feedingSchemeTitle"
         tools:ignore="DuplicateSpeakableTextCheck" />
-
-    <TextView
-        android:id="@+id/water"
-        android:layout_width="195dp"
-        android:layout_height="42dp"
-        android:layout_marginTop="7dp"
-        android:text="@string/water"
-        android:textAlignment="center"
-        android:textColor="@color/white"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="@+id/waterChoice"
-        app:layout_constraintEnd_toStartOf="@+id/waterChoice"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/waterChoice"
-        app:layout_constraintVertical_bias="0.0" />
 
     <EditText
         android:id="@+id/servingSize2"
@@ -276,6 +292,22 @@
         app:layout_constraintTop_toTopOf="@+id/dinnerTime"
         app:layout_constraintVertical_bias="1.0" />
 
+    <TextView
+        android:id="@+id/maxTime"
+        android:layout_width="339dp"
+        android:layout_height="21dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="47dp"
+        android:layout_marginBottom="39dp"
+        android:text="@string/maxTime"
+        android:textColor="@color/baby_blue"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toTopOf="@+id/water"
+        app:layout_constraintEnd_toEndOf="@+id/grams3"
+        app:layout_constraintStart_toStartOf="@+id/dinner"
+        app:layout_constraintTop_toBottomOf="@+id/dinnerTime" />
+
     <Button
         android:id="@+id/grams3"
         style="?android:attr/borderlessButtonStyle"
@@ -344,56 +376,64 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="top"
-        app:constraint_referenced_ids="feedingSchemeTitle" />
+        app:constraint_referenced_ids="feedingSchemeTitle"
+        tools:layout_editor_absoluteY="85dp" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier32"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="top"
-        app:constraint_referenced_ids="breakfast,breakfastTime,servingSize1,grams1" />
+        app:constraint_referenced_ids="breakfast,breakfastTime,servingSize1,grams1"
+        tools:layout_editor_absoluteY="175dp" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier33"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="top"
-        app:constraint_referenced_ids="lunch,lunchTime,servingSize2,grams2" />
+        app:constraint_referenced_ids="lunch,lunchTime,servingSize2,grams2"
+        tools:layout_editor_absoluteY="280dp" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier34"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="top"
-        app:constraint_referenced_ids="dinner,dinnerTime,servingSize3,grams3" />
+        app:constraint_referenced_ids="dinner,dinnerTime,servingSize3,grams3"
+        tools:layout_editor_absoluteY="388dp" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier35"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="top"
-        app:constraint_referenced_ids="water,waterChoice" />
+        app:constraint_referenced_ids="water,waterChoice"
+        tools:layout_editor_absoluteY="499dp" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier36"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="top"
-        app:constraint_referenced_ids="saveButton" />
+        app:constraint_referenced_ids="saveButton"
+        tools:layout_editor_absoluteY="619dp" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier37"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="left"
-        app:constraint_referenced_ids="backButton" />
+        app:constraint_referenced_ids="backButton"
+        tools:layout_editor_absoluteX="16dp" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier38"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="top"
-        app:constraint_referenced_ids="backButton" />
+        app:constraint_referenced_ids="backButton"
+        tools:layout_editor_absoluteY="16dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
