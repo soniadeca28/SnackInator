@@ -21,6 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -167,11 +168,11 @@ public class FeedingScheme extends AppCompatActivity {
         });
     }
 
-    private String checkForWarnings() throws ParseException {
+    private String checkForWarnings() throws ParseException{
+
+        String warning = "";
 
         long oneHourInMilliseconds = 3600000;
-
-        String warningMessages = "";
 
         SimpleDateFormat timeParser = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
 
@@ -188,110 +189,112 @@ public class FeedingScheme extends AppCompatActivity {
             assert lunchTime != null;
             assert dinnerTime != null;
 
-            boolean nothingSet = breakfastTime.getTime() / (float) oneHourInMilliseconds == 0
-                    && lunchTime.getTime() / (float) oneHourInMilliseconds == 0
-                    && dinnerTime.getTime() / (float) oneHourInMilliseconds == 0
-                    // all meal times are still default hours
-                    && (servingBreakfast.getText().toString().trim().isEmpty() || servingBreakfast.getText().toString().trim().equals(getString(R.string._0)))
-                    && (servingLunch.getText().toString().trim().isEmpty() || servingLunch.getText().toString().trim().equals(getString(R.string._0)))
-                    && (servingDinner.getText().toString().trim().isEmpty() || servingDinner.getText().toString().trim().equals(getString(R.string._0)));
-            // and all servings are still default values
+        boolean importantFieldsLeft = false;
 
-            boolean wrongOrder = ((!servingLunch.getText().toString().trim().equals(getString(R.string._0)) && !servingLunch.getText().toString().trim().isEmpty())
-            && (breakfastTime.after(lunchTime) || breakfastTime.after(dinnerTime) || lunchTime.after(dinnerTime)))
-                    // all three meal servings are set but they are in the wrong order
-                    || ((servingLunch.getText().toString().trim().equals(getString(R.string._0)) || servingLunch.getText().toString().trim().isEmpty()) && breakfastTime.after(dinnerTime));
-            // only breakfast and lunch are set and they are in the wrong order
+        boolean sameTimeOrUnset = false;
 
-            boolean lunchIsSet = !servingLunch.getText().toString().trim().equals(getString(R.string._0)) && !servingLunch.getText().toString().trim().isEmpty();
+        boolean breakfastDinnerNotSet = false;
 
-            boolean dinnerToBreakfastGapTooBig = breakfastTime.getTime() / (double) oneHourInMilliseconds + 24 - dinnerTime.getTime() / (double) oneHourInMilliseconds > 12;
+        boolean gapTooBig = false;
 
-            boolean breakfastToLunchGapTooBig = lunchTime.getTime() / (double) oneHourInMilliseconds - breakfastTime.getTime() / (double) oneHourInMilliseconds > 12;
+        boolean nothingSet = (servingBreakfast.getText().toString().trim().isEmpty() || servingBreakfast.getText().toString().trim().equals(getString(R.string._0)))
+                && (servingLunch.getText().toString().trim().isEmpty() || servingLunch.getText().toString().trim().equals(getString(R.string._0)))
+                && (servingDinner.getText().toString().trim().isEmpty() || servingDinner.getText().toString().trim().equals(getString(R.string._0)))
+        // and all servings are still default values
+        && breakfastTimeButton.getText().toString().equals(lunchTimeButton.getText().toString())
+                && lunchTimeButton.getText().toString().equals(dinnerTimeButton.getText().toString())
+                && dinnerTimeButton.getText().toString().equals(breakfastTimeButton.getText().toString())
+                && breakfastTimeButton.getText().toString().equals("00:00");
 
-            boolean lunchToDinnerGapTooBig = dinnerTime.getTime() / (double) oneHourInMilliseconds - lunchTime.getTime() / (double) oneHourInMilliseconds > 12;
+        boolean noServingSet = (servingBreakfast.getText().toString().trim().isEmpty() || servingBreakfast.getText().toString().trim().equals(getString(R.string._0)))
+                && (servingLunch.getText().toString().trim().isEmpty() || servingLunch.getText().toString().trim().equals(getString(R.string._0)))
+                && (servingDinner.getText().toString().trim().isEmpty() || servingDinner.getText().toString().trim().equals(getString(R.string._0)));
+        // and all servings are still default values
 
-            boolean breakfastToDinnerGapTooBig = dinnerTime.getTime() / (double) oneHourInMilliseconds - breakfastTime.getTime() / (double) oneHourInMilliseconds > 12;
+        boolean allMealsSameTime = breakfastTimeButton.getText().toString().equals(lunchTimeButton.getText().toString())
+                && lunchTimeButton.getText().toString().equals(dinnerTimeButton.getText().toString())
+                && dinnerTimeButton.getText().toString().equals(breakfastTimeButton.getText().toString());
 
-            boolean breakfastOrDinnerNotSet = servingBreakfast.getText().toString().trim().equals(getString(R.string._0)) || servingDinner.getText().toString().trim().equals(getString(R.string._0)) ||
-                    servingBreakfast.getText().toString().trim().isEmpty() || servingDinner.getText().toString().trim().isEmpty();
+        boolean breakfastOrDinnerNotSet = servingBreakfast.getText().toString().trim().equals(getString(R.string._0)) || servingDinner.getText().toString().trim().equals(getString(R.string._0)) ||
+                servingBreakfast.getText().toString().trim().isEmpty() || servingDinner.getText().toString().trim().isEmpty();
 
-            boolean noHourSet = breakfastTime.getTime() / (float) oneHourInMilliseconds == 0
-                    && lunchTime.getTime() / (float) oneHourInMilliseconds == 0
-                    && dinnerTime.getTime() / (float) oneHourInMilliseconds == 0;
-            // all meal times are still default hours
+        boolean lunchIsSet = !servingLunch.getText().toString().trim().equals(getString(R.string._0)) && !servingLunch.getText().toString().trim().isEmpty();
 
-            boolean noServingSet = (servingBreakfast.getText().toString().trim().isEmpty() || servingBreakfast.getText().toString().trim().equals(getString(R.string._0)))
-                    && (servingLunch.getText().toString().trim().isEmpty() || servingLunch.getText().toString().trim().equals(getString(R.string._0)))
-                    && (servingDinner.getText().toString().trim().isEmpty() || servingDinner.getText().toString().trim().equals(getString(R.string._0)));
-            // and all servings are still default values
+        boolean gapTooBigWithLunch = lunchIsSet && ((breakfastTime.getTime() - dinnerTime.getTime())/oneHourInMilliseconds > -12
+                || (lunchTime.getTime() - breakfastTime.getTime())/oneHourInMilliseconds > 12
+                || (dinnerTime.getTime() - breakfastTime.getTime())/oneHourInMilliseconds > 12);
 
-            if (nothingSet || noHourSet || noServingSet) // if there's nothing set there's no point in verifying anything else
+        boolean gapTooBigWithoutLunch = !lunchIsSet && ((dinnerTime.getTime() - breakfastTime.getTime())/oneHourInMilliseconds != 12);
+
+        if(nothingSet)
+        {
+            importantFieldsLeft = true;
+        }
+        else
+        {
+            if(noServingSet)
             {
-                warningMessages = "You left important fields empty \n\n";
-            } else { //if values are set but they are wrong
-
-                if (wrongOrder) {
-                    warningMessages += "The times you set for the meals are not properly ordered! \n\n";
-                }
-
-                if (dinnerToBreakfastGapTooBig && !wrongOrder) // time gap between dinner and next day's breakfast too big, if the order is wrong there's no point to pop the warning
-                {
-                    warningMessages += "There is too much time between dinner and breakfast of the following day. To keep your pet safe, no more than 12 hours should pass between meals!\n\n";
-                }
-
-                if (lunchIsSet) { //lunch is set so there should be 3 meals per day
-
-                    if (breakfastToLunchGapTooBig && !wrongOrder) //time gap between lunch and breakfast of the same day, if the order is wrong there's no point to pop the warning
-                    {
-                        warningMessages += "There is too much time between breakfast and lunch. To keep your pet safe, no more than 12 hours should pass between meals!\n\n";
-                    }
-
-                    if (lunchToDinnerGapTooBig && !wrongOrder) {
-                        warningMessages += "There is too much time between lunch and dinner. To keep your pet safe, no more than 12 hours should pass between meals!\n\n";
-                    }
-
-                    if (breakfastOrDinnerNotSet) // breakfast or dinner is not set
-                    {
-                        warningMessages += "Breakfast and dinner are mandatory!\n\n";
-                    }
-                } else { //lunch is not set so there should be 2 meals per day
-
-                    if (breakfastOrDinnerNotSet) // breakfast or dinner is not set --> less than 2 meals per day
-                    {
-                        warningMessages += "Only lunch is optional. Breakfast and dinner are mandatory (the minimum number of meals per day is 2)!\n\n";
-                    } else if (breakfastToDinnerGapTooBig && !wrongOrder) //dinner and breakfast are set, but the time gap between them (same day) is too much
-                    {
-                        warningMessages += "There is too much time between breakfast and dinner of the same day. To keep your pet safe, no more than 12 hours should pass between meals!\n\n";
-                    }
-                }
-
+                importantFieldsLeft = true;
             }
+
+            if(allMealsSameTime)
+            {
+                sameTimeOrUnset = true;
+            }
+
+            if(breakfastOrDinnerNotSet)
+            {
+                breakfastDinnerNotSet = true;
+            }
+
+            if(gapTooBigWithLunch || gapTooBigWithoutLunch)
+            {
+                gapTooBig = true;
+            }
+        }
+
+        if(importantFieldsLeft)
+        {
+            warning += "All mandatory fields must be completed!\n";
+        }
+        else if(sameTimeOrUnset)
+        {
+            warning += "All meals can't be at the same time!\n";
+        }
+        else if(breakfastDinnerNotSet)
+        {
+            warning += "Only lunch is optional, breakfast and dinner are mandatory!\n";
+        }
+        else if(gapTooBig)
+        {
+            warning += "The time gap between meals should not be greater than 12 hours!\n";
+        }
 
         } catch (ParseException e) {
             Log.println(Log.ERROR, "ERR_parsing", e.getMessage());
             e.printStackTrace();
         }
 
-        return warningMessages;
+        return warning;
+
     }
 
     private void saveFeedingScheme() {
 
         try {
-            if (!checkForWarnings().equals("")) {
-                Log.println(Log.INFO, "INFO_userWarning", "Did not save feeding scheme because of the warnings received: \n" + checkForWarnings());
-
+            if(!checkForWarnings().isEmpty())
+            {
                 AlertDialog.Builder builder = new AlertDialog.Builder(FeedingScheme.this, android.R.style.Theme_Holo_Panel);
                 builder.setMessage(checkForWarnings());
                 builder.setTitle("Could not save feeding scheme because:");
                 builder.setPositiveButton("Okay", (dialog, which) -> dialog.cancel());
                 AlertDialog alertDialog = builder.create();
                 alertDialog.show();
+                Log.println(Log.INFO, "INFO_userWarning", "Did not save feeding schema due to warnings\n");
                 return;
             }
         } catch (ParseException e) {
-            Log.println(Log.ERROR, "ERR_parsing", e.getMessage() + "\n");
+            Log.println(Log.ERROR, "ERROR_parse", "Error parsing time\n");
             e.printStackTrace();
         }
 
