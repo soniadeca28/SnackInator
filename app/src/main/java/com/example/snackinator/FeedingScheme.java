@@ -1,5 +1,7 @@
 package com.example.snackinator;
 
+import static java.lang.Math.abs;
+
 import android.app.AlertDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
@@ -21,7 +23,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -115,17 +116,20 @@ public class FeedingScheme extends AppCompatActivity {
 
                 if (hBkf != null && mBkf != null) {
                     breakfastTimeButton.setText(String.format(Locale.getDefault(), "%02d:%02d", hBkf, mBkf));
+                    hourBreakfast = Math.toIntExact(hBkf); minuteBreakfast = Math.toIntExact(mBkf);
                 } else {
                     breakfastTimeButton.setText(String.format(Locale.getDefault(), "%02d:%02d", 0, 0));
                 }
 
                 if (hLch != null && mLch != null) {
                     lunchTimeButton.setText(String.format(Locale.getDefault(), "%02d:%02d", hLch, mLch));
+                    hourLunch = Math.toIntExact(hLch); minuteLunch = Math.toIntExact(mLch);
                 } else {
                     lunchTimeButton.setText(String.format(Locale.getDefault(), "%02d:%02d", 0, 0));
                 }
 
                 if (hDn != null && mDn != null) {
+                    hourDinner = Math.toIntExact(hDn); minuteDinner = Math.toIntExact(mDn);
                     dinnerTimeButton.setText(String.format(Locale.getDefault(), "%02d:%02d", hDn, mDn));
                 } else {
                     dinnerTimeButton.setText(String.format(Locale.getDefault(), "%02d:%02d", 0, 0));
@@ -191,11 +195,9 @@ public class FeedingScheme extends AppCompatActivity {
 
         boolean importantFieldsLeft = false;
 
-        boolean sameTimeOrUnset = false;
+        boolean wrongTimeSet = false;
 
         boolean breakfastDinnerNotSet = false;
-
-        boolean gapTooBig = false;
 
         boolean nothingSet = (servingBreakfast.getText().toString().trim().isEmpty() || servingBreakfast.getText().toString().trim().equals(getString(R.string._0)))
                 && (servingLunch.getText().toString().trim().isEmpty() || servingLunch.getText().toString().trim().equals(getString(R.string._0)))
@@ -220,11 +222,17 @@ public class FeedingScheme extends AppCompatActivity {
 
         boolean lunchIsSet = !servingLunch.getText().toString().trim().equals(getString(R.string._0)) && !servingLunch.getText().toString().trim().isEmpty();
 
-        boolean gapTooBigWithLunch = lunchIsSet && ((breakfastTime.getTime() - dinnerTime.getTime())/oneHourInMilliseconds > -12
+        boolean gapTooBigWithLunch = lunchIsSet
+                && (((breakfastTime.getTime() - dinnerTime.getTime())/oneHourInMilliseconds > -12 && breakfastTime.getTime() < dinnerTime.getTime())
+                || ((breakfastTime.getTime() - dinnerTime.getTime())/oneHourInMilliseconds > 12 && breakfastTime.getTime() > dinnerTime.getTime())
                 || (lunchTime.getTime() - breakfastTime.getTime())/oneHourInMilliseconds > 12
                 || (dinnerTime.getTime() - breakfastTime.getTime())/oneHourInMilliseconds > 12);
 
         boolean gapTooBigWithoutLunch = !lunchIsSet && ((dinnerTime.getTime() - breakfastTime.getTime())/oneHourInMilliseconds != 12);
+
+        boolean sameHourWithLunch = lunchIsSet && ((abs(breakfastTime.getTime() - dinnerTime.getTime())/oneHourInMilliseconds < 1)
+                || (abs(lunchTime.getTime() - breakfastTime.getTime())/oneHourInMilliseconds < 1)
+                || (abs(dinnerTime.getTime() - lunchTime.getTime())/oneHourInMilliseconds < 1));
 
         if(nothingSet)
         {
@@ -239,7 +247,7 @@ public class FeedingScheme extends AppCompatActivity {
 
             if(allMealsSameTime)
             {
-                sameTimeOrUnset = true;
+                wrongTimeSet = true;
             }
 
             if(breakfastOrDinnerNotSet)
@@ -249,7 +257,12 @@ public class FeedingScheme extends AppCompatActivity {
 
             if(gapTooBigWithLunch || gapTooBigWithoutLunch)
             {
-                gapTooBig = true;
+                wrongTimeSet = true;
+            }
+
+            if(sameHourWithLunch)
+            {
+                wrongTimeSet = true;
             }
         }
 
@@ -257,17 +270,13 @@ public class FeedingScheme extends AppCompatActivity {
         {
             warning += "All mandatory fields must be completed!\n";
         }
-        else if(sameTimeOrUnset)
+        else if(wrongTimeSet)
         {
-            warning += "All meals can't be at the same time!\n";
+            warning += "Meals need to be set at least 1 hour apart with a maximum of 12 hours between them!\n";
         }
         else if(breakfastDinnerNotSet)
         {
             warning += "Only lunch is optional, breakfast and dinner are mandatory!\n";
-        }
-        else if(gapTooBig)
-        {
-            warning += "The time gap between meals should not be greater than 12 hours!\n";
         }
 
         } catch (ParseException e) {
