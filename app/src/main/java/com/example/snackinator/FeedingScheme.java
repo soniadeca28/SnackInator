@@ -225,8 +225,7 @@ public class FeedingScheme extends AppCompatActivity {
         boolean gapTooBigWithLunch = lunchIsSet
                 && (((breakfastTime.getTime() - dinnerTime.getTime())/oneHourInMilliseconds > -12 && breakfastTime.getTime() < dinnerTime.getTime())
                 || ((breakfastTime.getTime() - dinnerTime.getTime())/oneHourInMilliseconds > 12 && breakfastTime.getTime() > dinnerTime.getTime())
-                || (lunchTime.getTime() - breakfastTime.getTime())/oneHourInMilliseconds > 12
-                || (dinnerTime.getTime() - breakfastTime.getTime())/oneHourInMilliseconds > 12);
+                || (lunchTime.getTime() - breakfastTime.getTime())/oneHourInMilliseconds > 12);
 
         boolean gapTooBigWithoutLunch = !lunchIsSet && ((dinnerTime.getTime() - breakfastTime.getTime())/oneHourInMilliseconds != 12);
 
