@@ -25,6 +25,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.TimeZone;
 
 public class FeedingScheme extends AppCompatActivity {
@@ -85,6 +86,51 @@ public class FeedingScheme extends AppCompatActivity {
         Button saveButton = findViewById(R.id.saveButton);
         saveButton.setOnClickListener(v -> saveFeedingScheme());
 
+        retrieveNotifications();
+
+    }
+
+    private void retrieveNotifications()
+    {
+        final String[] notificationMessage = {""};
+
+        databaseReference.child("SnackInators/").child(CODE).child("/notifications").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.hasChildren())
+                {
+                    for(DataSnapshot snp: snapshot.getChildren())
+                    {
+                        if(Objects.requireNonNull(snp.getKey()).equals("DISTANCE"))
+                        {
+                            notificationMessage[0] += "The food tank is nearly empty. Please add food!\n";
+                        }
+                        if(Objects.requireNonNull(snp.getKey()).equals("WATER"))
+                        {
+                            notificationMessage[0] += "The water fountain is nearly empty. Please add some water!\n";
+                        }
+
+                    }
+                    AlertDialog.Builder builder = new AlertDialog.Builder(FeedingScheme.this, android.R.style.Theme_Holo_Panel);
+                    builder.setMessage(notificationMessage[0]);
+                    builder.setTitle("NOTIFICATION");
+                    builder.setPositiveButton("Okay", (dialog, which) -> {
+                        for(DataSnapshot snp: snapshot.getChildren())
+                        {
+                            snp.getRef().removeValue();
+                        }
+                        dialog.cancel();
+                    });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.println(Log.ERROR, "WARNING_firebase", "Could not retrieve data from firebase to show notification\n");
+            }
+        });
     }
 
 
