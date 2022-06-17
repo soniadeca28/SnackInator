@@ -23,4 +23,5 @@
     <string name="once_a_day">Once a day</string>
     <string name="all_day">All day</string>
     <string name="meal">Meal</string>
+    <string name="snackInator">SnackInator</string>
 </resources>

@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
                 {
                     Toast.makeText(MainActivity.this, "The code you introduced is invalid. Please try again! \n", Toast.LENGTH_SHORT).show();
                     code.setText("");
-                    Log.println(Log.INFO, "INFO_userWarning", "Did not find the introduced code in Firebase \n");
+                    Log.i( "INFO_userWarning", "Did not find the introduced code in Firebase \n");
                 }
                 else
                 {
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(MainActivity.this, "We encountered an error when verifying your code. Please try again! \n", Toast.LENGTH_SHORT).show();
-                Log.println(Log.ERROR, "WARNING_firebase", "Could not retrieve data from firebase to verify user-introduced code \n");
+                Log.w( "WARNING_firebase", "Could not retrieve data from firebase to verify user-introduced code \n");
             }
         });
 
