@@ -44,8 +44,10 @@ public class FeedingScheme extends AppCompatActivity {
     private boolean lunchTimeButtonClicked;
     private boolean dinnerTimeButtonClicked;
     private TextView servingBreakfast, servingLunch, servingDinner;
-    private DatabaseReference databaseReference;
     private String CODE;
+    final String databaseLink = "https://snackinator-lic-default-rtdb.europe-west1.firebasedatabase.app";
+    FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance(databaseLink);
+    private DatabaseReference databaseReference = firebaseDatabase.getReference();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,11 +56,6 @@ public class FeedingScheme extends AppCompatActivity {
 
         Bundle info = getIntent().getExtras();
         CODE = info.getString("CODE");
-
-        final String databaseLink = "https://snackinator-lic-default-rtdb.europe-west1.firebasedatabase.app";
-
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance(databaseLink);
-        databaseReference = firebaseDatabase.getReference();
 
         retrieveDataFromFirebase();
 
@@ -103,11 +100,11 @@ public class FeedingScheme extends AppCompatActivity {
                     {
                         if(Objects.requireNonNull(snp.getKey()).equals("DISTANCE"))
                         {
-                            notificationMessage[0] += "The food tank is nearly empty. Please add food!\n";
+                            notificationMessage[0] += "The food tank is nearly empty. Feedings can't be done! Please add food!\n";
                         }
                         if(Objects.requireNonNull(snp.getKey()).equals("WATER"))
                         {
-                            notificationMessage[0] += "The water fountain is nearly empty. Please add some water!\n";
+                            notificationMessage[0] += "The water fountain is nearly empty and will not be working! Please add some water!\n";
                         }
 
                     }
@@ -120,15 +117,13 @@ public class FeedingScheme extends AppCompatActivity {
                             snp.getRef().removeValue();
                         }
                         dialog.cancel();
-                    });
-                    AlertDialog alertDialog = builder.create();
-                    alertDialog.show();
+                    }).create().show();
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.println(Log.ERROR, "WARNING_firebase", "Could not retrieve data from firebase to show notification\n");
+                Log.w("WARNING_firebase", "Could not retrieve data from firebase to show notification\n");
             }
         });
     }
@@ -210,7 +205,7 @@ public class FeedingScheme extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(FeedingScheme.this, "Some of your data could not be retrieved from our database! \n", Toast.LENGTH_SHORT).show();
-                Log.println(Log.ERROR, "WARNING_firebase", "Could not retrieve some of the data from firebase to update data in Feeding Scheme\n");
+                Log.w( "WARNING_firebase", "Could not retrieve some of the data from firebase to update data in Feeding Scheme\n");
                 breakfastTimeButton.setText(String.format(Locale.getDefault(), "%02d:%02d", 0, 0));
                 lunchTimeButton.setText(String.format(Locale.getDefault(), "%02d:%02d", 0, 0));
                 dinnerTimeButton.setText(String.format(Locale.getDefault(), "%02d:%02d", 0, 0));
@@ -344,11 +339,11 @@ public class FeedingScheme extends AppCompatActivity {
                 builder.setPositiveButton("Okay", (dialog, which) -> dialog.cancel());
                 AlertDialog alertDialog = builder.create();
                 alertDialog.show();
-                Log.println(Log.INFO, "INFO_userWarning", "Did not save feeding schema due to warnings\n");
+                Log.i( "INFO_userWarning", "Did not save feeding schema due to warnings\n");
                 return;
             }
         } catch (ParseException e) {
-            Log.println(Log.ERROR, "ERROR_parse", "Error parsing time\n");
+            Log.e( "ERROR_parse", "Error parsing time\n");
             e.printStackTrace();
         }
 
@@ -389,7 +384,7 @@ public class FeedingScheme extends AppCompatActivity {
 
         Toast.makeText(FeedingScheme.this, "Saved successfully! \n", Toast.LENGTH_SHORT).show();
 
-        Log.println(Log.INFO, "SUCCESS_saved", "Successfully saved feeding schema \n");
+       Log.i( "SUCCESS_saved", "Successfully saved feeding schema \n");
 
     }
 
